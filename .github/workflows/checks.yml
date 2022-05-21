@@ -1,0 +1,32 @@
+# this file is for github actions, whenever we'll try to update code on github
+# these below steps will run and if it all passes  then code will be pushed
+
+# its name is checks, we can make any name of it
+# on push means all steps will be done on push commands
+# here we defined different types of jobs , name is test and lint 
+# from the name we can see that we have to test our code and check lint
+# we defined that it'll be run on ubuntu 20.04
+# then below in steps first to Login docker account, take username and password
+# which we stored in secret key in github repository
+# then run test file and run flake8 for linting.
+
+---
+name: Checks 
+
+on: [push] 
+jobs: 
+  test-lint: 
+    name: Test and Lint 
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Test 
+        run: docker-compose run --rm app sh -c "python manage.py test"
+      - name: Lint
+        run: docker-compose run --rm app sh -c "flake8"

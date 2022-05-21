@@ -1,0 +1,27 @@
+# this version is docker compose syntaxt, if docker compose release new syntaxt
+# it matches to our whole app we couldn't get error in future
+version: "3.9"
+
+# this is main filer in docker compose file
+# context (.) means root directory that we running 
+# port mapping -  8000 for our local machine and 8000 inside docker cointainer
+# volumes - mapping app directory to inside app directory, 
+# it'll automatically sync code from our local machine to docker, so we don't have to build docker again and again
+# command - command we define inside our docker compose file, we can change command in future
+
+# then after context we added args for dev purposes
+
+
+services:
+  app:
+    build:
+      context: .
+      args:
+        - DEV=true
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
+
