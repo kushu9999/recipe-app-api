@@ -2,16 +2,6 @@
 # it matches to our whole app we couldn't get error in future
 version: "3.9"
 
-# this is main filer in docker compose file
-# context (.) means root directory that we running 
-# port mapping -  8000 for our local machine and 8000 inside docker cointainer
-# volumes - mapping app directory to inside app directory, 
-# it'll automatically sync code from our local machine to docker, so we don't have to build docker again and again
-# command - command we define inside our docker compose file, we can change command in future
-
-# then after context we added args for dev purposes
-
-
 services:
   app:
     build:
@@ -24,4 +14,41 @@ services:
       - ./app:/app
     command: >
       sh -c "python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=devdb
+      - DB_USER=devuser
+      - DB_PASS=changeme
+    depends_on:
+      - db 
 
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - dev-db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=devdb
+      - POSTGRES_USER=devuser
+      - POSTGRES_PASSWORD=changeme 
+
+volumes:
+  dev-db-data:
+
+# this is main filer in docker compose file
+# context (.) means root directory that we running 
+# port mapping -  8000 for our local machine and 8000 inside docker cointainer
+# volumes - mapping app directory to inside app directory, 
+# it'll automatically sync code from our local machine to docker, so we don't have to build docker again and again
+# command - command we define inside our docker compose file, we can change command in future
+
+# then after context we added args for dev purposes
+
+# now we added new service to our docker compose named db 
+# in db we are using postgresql apline 13 lightweight image
+# then we defined volumes and add proper path 
+# then we created environment variable for db, username and password
+# it'll set initial database configuration for new db service
+
+# then we add environment variable in app service, matching field and
+# make depend on db, so that before running app it'll start db
+# if db creation will fail, it won't creat app and return from there
