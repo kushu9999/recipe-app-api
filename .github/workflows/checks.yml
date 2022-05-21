@@ -8,7 +8,7 @@
 # we defined that it'll be run on ubuntu 20.04
 # then below in steps first to Login docker account, take username and password
 # which we stored in secret key in github repository
-# then run test file and run flake8 for linting.
+# then run test file and run flake8 for linting.. 
 
 ---
 name: Checks 
